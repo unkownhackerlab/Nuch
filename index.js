@@ -8,8 +8,16 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+
+// Serve the Chat ID Finder page at "/"
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "chatid.html"));
+});
+
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// API to fetch chat IDs
 app.post("/get-chat-id", async (req, res) => {
   const { token } = req.body;
 
@@ -37,7 +45,8 @@ app.post("/get-chat-id", async (req, res) => {
           chats.push({
             id: chat.id,
             type: chat.type,
-            name: chat.title || chat.first_name || "Unknown"
+            name: chat.title || chat.first_name || "Unknown",
+            username: chat.username || "N/A"
           });
         }
       }
@@ -49,7 +58,7 @@ app.post("/get-chat-id", async (req, res) => {
   }
 });
 
-// Vercel export
+// Export for Vercel
 export default app;
 
 // Local dev only
